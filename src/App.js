@@ -1,57 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { Button, Container, MuiThemeProvider } from "@material-ui/core";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { muiTheme, useStyles } from "./app/material-styles";
+import { Table } from "./features/table/Table";
+import { decrement, increment } from "./features/table/tableSlice";
 
 function App() {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <MuiThemeProvider theme={muiTheme}>
+      <Container maxWidth="lg" className={classes.topSpace}>
+        <Table />
+        <Button
+          variant="contained"
+          className={classes.simpleSpacer}
+          color={"primary"}
+          onClick={() => dispatch(increment())}
+        >
+          Increment
+        </Button>
+        <Button
+          variant="contained"
+          className={classes.simpleSpacer}
+          color={"secondary"}
+          onClick={() => dispatch(decrement())}
+        >
+          Decrement
+        </Button>
+      </Container>
+    </MuiThemeProvider>
   );
 }
 
