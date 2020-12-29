@@ -1,15 +1,21 @@
-import { Container, MuiThemeProvider } from "@material-ui/core";
+import { Container, makeStyles, MuiThemeProvider } from "@material-ui/core";
 import React from "react";
-import { muiTheme, useStyles } from "./app/material-styles";
+import { muiTheme } from "./app/material-styles";
 import Debug from "./Debug";
 import { Table } from "./features/table/Table";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(6),
+  },
+}));
 
 function App() {
   const classes = useStyles();
 
   return (
     <MuiThemeProvider theme={muiTheme}>
-      <Container maxWidth="lg" className={classes.topSpace}>
+      <Container maxWidth="lg" className={classes.root}>
         <Table />
         <Debug />
       </Container>

@@ -2,11 +2,16 @@
  * Debug component
  */
 
-import { Button } from "@material-ui/core";
+import { Button, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useStyles } from "./app/material-styles";
 import { decrement, increment, selectCount } from "./features/table/tableSlice";
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(2),
+  },
+}));
 
 function Debug() {
   const classes = useStyles();
@@ -19,7 +24,7 @@ function Debug() {
       <span>{count}</span>
       <Button
         variant="contained"
-        className={classes.simpleSpacer}
+        className={classes.button}
         color={"primary"}
         onClick={() => dispatch(increment())}
       >
@@ -27,7 +32,7 @@ function Debug() {
       </Button>
       <Button
         variant="contained"
-        className={classes.simpleSpacer}
+        className={classes.button}
         color={"secondary"}
         onClick={() => dispatch(decrement())}
       >
