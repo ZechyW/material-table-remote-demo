@@ -11,5 +11,5 @@ test("renders without errors", () => {
     </Provider>
   );
 
-  expect(getByText(/main table/i)).toBeInTheDocument();
+  expect(getByText(/Remote Data Demo/i)).toBeInTheDocument();
 });
