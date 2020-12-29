@@ -37,12 +37,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {
           "packageLocation": "./",
           "packageDependencies": [
+            ["@babel/runtime", "npm:7.12.5"],
             ["@material-ui/core", "virtual:1f573461b8243e5f5131a0b133f57489b79bf7da2dd4f7e7b8a9db722079957ec6c753f68afca901460d736e73e1d6545f101cc9aa0b9e46251472f926dd37cd#npm:4.11.2"],
             ["@material-ui/icons", "virtual:1f573461b8243e5f5131a0b133f57489b79bf7da2dd4f7e7b8a9db722079957ec6c753f68afca901460d736e73e1d6545f101cc9aa0b9e46251472f926dd37cd#npm:4.11.2"],
             ["@reduxjs/toolkit", "npm:1.5.0"],
             ["@testing-library/jest-dom", "npm:4.2.4"],
             ["@testing-library/react", "virtual:1f573461b8243e5f5131a0b133f57489b79bf7da2dd4f7e7b8a9db722079957ec6c753f68afca901460d736e73e1d6545f101cc9aa0b9e46251472f926dd37cd#npm:9.5.0"],
             ["@testing-library/user-event", "virtual:1f573461b8243e5f5131a0b133f57489b79bf7da2dd4f7e7b8a9db722079957ec6c753f68afca901460d736e73e1d6545f101cc9aa0b9e46251472f926dd37cd#npm:7.2.1"],
+            ["@types/jest", "npm:26.0.19"],
             ["@types/node", "npm:14.14.16"],
             ["axios", "npm:0.21.1"],
             ["eslint", "npm:7.16.0"],
@@ -5168,6 +5170,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@types/istanbul-reports", "npm:3.0.0"],
             ["@types/istanbul-lib-report", "npm:3.0.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/jest", [
+        ["npm:26.0.19", {
+          "packageLocation": "./.yarn/cache/@types-jest-npm-26.0.19-add5d117dd-98c8daaf89.zip/node_modules/@types/jest/",
+          "packageDependencies": [
+            ["@types/jest", "npm:26.0.19"],
+            ["jest-diff", "npm:26.6.2"],
+            ["pretty-format", "npm:26.6.2"]
           ],
           "linkType": "HARD",
         }]
@@ -19586,12 +19599,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",
           "packageDependencies": [
             ["ui-prototype", "workspace:."],
+            ["@babel/runtime", "npm:7.12.5"],
             ["@material-ui/core", "virtual:1f573461b8243e5f5131a0b133f57489b79bf7da2dd4f7e7b8a9db722079957ec6c753f68afca901460d736e73e1d6545f101cc9aa0b9e46251472f926dd37cd#npm:4.11.2"],
             ["@material-ui/icons", "virtual:1f573461b8243e5f5131a0b133f57489b79bf7da2dd4f7e7b8a9db722079957ec6c753f68afca901460d736e73e1d6545f101cc9aa0b9e46251472f926dd37cd#npm:4.11.2"],
             ["@reduxjs/toolkit", "npm:1.5.0"],
             ["@testing-library/jest-dom", "npm:4.2.4"],
             ["@testing-library/react", "virtual:1f573461b8243e5f5131a0b133f57489b79bf7da2dd4f7e7b8a9db722079957ec6c753f68afca901460d736e73e1d6545f101cc9aa0b9e46251472f926dd37cd#npm:9.5.0"],
             ["@testing-library/user-event", "virtual:1f573461b8243e5f5131a0b133f57489b79bf7da2dd4f7e7b8a9db722079957ec6c753f68afca901460d736e73e1d6545f101cc9aa0b9e46251472f926dd37cd#npm:7.2.1"],
+            ["@types/jest", "npm:26.0.19"],
             ["@types/node", "npm:14.14.16"],
             ["axios", "npm:0.21.1"],
             ["eslint", "npm:7.16.0"],

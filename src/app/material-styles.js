@@ -1,3 +1,7 @@
+/**
+ * Material UI: Utility classes
+ */
+
 import { createMuiTheme, makeStyles } from "@material-ui/core";
 import { blue, teal } from "@material-ui/core/colors";
 
