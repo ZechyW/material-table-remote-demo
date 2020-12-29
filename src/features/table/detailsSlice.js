@@ -12,11 +12,11 @@ export const detailsSlice = createSlice({
   },
   reducers: {
     /**
-     * Set the details for the given record.
+     * Save the details for the given record.
      * @param state
      * @param action
      */
-    _setDetails: (state, action) => {
+    saveDetails: (state, action) => {
       const { ID, Icon, Name, Description } = action.payload;
       state.items[ID] = { Icon, Name, Description };
     },
@@ -40,22 +40,12 @@ export const detailsSlice = createSlice({
         const removeId = state.seenIds.shift();
         // We keep a little trace of the original so that the table component can close the associated details panel if
         // it happens to be open.
-        state.items[removeId] = {
-          Icon: "/favicon.ico",
-          Name: "Blah",
-          Description: "Blah",
-        };
+        state.items[removeId] = "Dropped";
       }
     },
   },
 });
 
-const { _setDetails } = detailsSlice.actions;
-export const { updateSeen } = detailsSlice.actions;
-
-export const saveDetails = (payload) => (dispatch) => {
-  dispatch(_setDetails(payload));
-  dispatch(updateSeen(payload));
-};
+export const { saveDetails, updateSeen } = detailsSlice.actions;
 
 export default detailsSlice.reducer;
