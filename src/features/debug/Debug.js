@@ -5,7 +5,7 @@
 import { Button, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { decrement, increment, selectCount } from "./features/table/tableSlice";
+import { decrement, increment } from "./debugSlice";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -17,7 +17,7 @@ function Debug() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const count = useSelector(selectCount);
+  const count = useSelector((state) => state.debug.count);
 
   return (
     <>

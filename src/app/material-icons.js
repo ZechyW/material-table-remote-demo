@@ -11,6 +11,7 @@ import {
   Delete,
   FirstPage,
   LastPage,
+  Replay,
   Search,
 } from "@material-ui/icons";
 import React, { forwardRef } from "react";
@@ -38,6 +39,7 @@ export const tableIcons = {
   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+  Retry: forwardRef((props, ref) => <Replay {...props} ref={ref} />),
 
   SpamUnset: forwardRef((props, ref) => (
     <Delete color={"disabled"} {...props} ref={ref} />

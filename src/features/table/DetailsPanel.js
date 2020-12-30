@@ -6,10 +6,8 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import axios from "axios";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { saveDetails, updateSeen } from "./detailsSlice";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   panelRoot: {
@@ -42,68 +40,34 @@ const useStyles = makeStyles((theme) => ({
  * Renders the Details panel for a given table row
  *
  * @param rowData
- * @property rowData.ID
+ * @property rowData.id
  * @param tableRef
  * @returns {JSX.Element}
  */
-export function DetailsPanel({ rowData, tableRef }) {
+export function DetailsPanel({ rowData, closeRowPanel }) {
+  const itemId = rowData.id;
+  const rowId = rowData.tableData.id;
+
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const details = useSelector((state) => state.details.items[rowData.ID]);
+  const details = useSelector((state) => state.table.itemDetails[itemId]);
 
   useEffect(() => {
-    console.log([rowData.ID, details, dispatch]);
-    if (details === undefined) {
-      // The details for this item are either new or have been dropped from the cache; hit the API again.
-      // When this hook gets called again with the new details, we will automatically call `updateSeen()` below.
-      (async () => {
-        const response = await axios.post(
-          `https://xivapi.com/Achievement/${rowData.ID}`
-        );
-        const { Icon, Name, Description } = response.data;
-
-        dispatch(
-          saveDetails({
-            ID: rowData.ID,
-            Icon,
-            Name,
-            Description,
-          })
-        );
-      })();
-    } else if (details === "Dropped") {
-      // const rowId = tableRef.current.dataManager.data.findIndex(
-      //   (item) => item.ID === rowData.ID
-      // );
-      // const rowData = tableRef.current.dataManager.data[rowId];
-      // if (rowData && rowData.tableData.showDetailPanel !== undefined) {
-      //   tableRef.current.onToggleDetailPanel(
-      //     [rowId],
-      //     tableRef.current.props.detailPanel
-      //   );
-      // }
-    } else {
-      // The details for this item are still in the cache; register a hit.
-      dispatch(
-        updateSeen({
-          ID: rowData.ID,
-        })
-      );
+    if (!details) {
+      // The panel is open, but it lost its contents (they were probably dropped from the LRU cache) so we close it.
+      closeRowPanel(rowId);
     }
-  }, [rowData.ID, details, dispatch]);
+  });
+
+  let description = "Loading...";
+  let icon = "/apple-touch-icon.png";
+  if (details?.status === "Cached") {
+    description = details.description;
+    icon = details.icon;
+  }
 
   // Remove extraneous newlines, prepare to display using <br/>s
   // (React doesn't let us render strings as HTML directly by default)
-  let content = "Loading...";
-  let iconSrc = "/apple-touch-icon.png";
-  if (details !== undefined) {
-    content = `${details.Description}
- 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer purus justo, dignissim ut efficitur sit amet, mollis quis libero. Vivamus quis magna volutpat, commodo elit id, aliquet massa. Quisque congue felis eget diam ultricies, ultricies suscipit felis aliquam. Integer ullamcorper volutpat semper. Curabitur a mauris ornare, facilisis odio eget, mollis elit. Nam molestie erat ac quam scelerisque iaculis. Quisque ac felis auctor, viverra orci eget, dignissim metus.
-`;
-    iconSrc = `https://xivapi.com${details.Icon}`;
-  }
-  const textLines = content
+  const textLines = description
     .replace(/(\s*\r?\n\r?){4,}/g, "\n\n\n")
     .split(/\r?\n\r?/);
   return (
@@ -120,11 +84,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer purus justo, di
               ))}
             </Typography>
           </CardContent>
-          <CardMedia
-            className={classes.cardIcon}
-            image={iconSrc}
-            title={"Icon"}
-          />
+          <CardMedia className={classes.cardIcon} image={icon} title={"Icon"} />
         </Card>
       </Grid>
     </Grid>

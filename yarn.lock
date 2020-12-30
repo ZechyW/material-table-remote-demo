@@ -9864,6 +9864,43 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"material-table-remote-demo@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "material-table-remote-demo@workspace:."
+  dependencies:
+    "@babel/runtime": ^7.12.5
+    "@material-ui/core": ^4.11.2
+    "@material-ui/icons": ^4.11.2
+    "@reduxjs/toolkit": ^1.1.0
+    "@testing-library/jest-dom": ^4.2.4
+    "@testing-library/react": ^9.3.2
+    "@testing-library/user-event": ^7.1.2
+    "@types/jest": ^26.0.19
+    "@types/node": ^14.14.16
+    axios: ^0.21.1
+    eslint: ^7.16.0
+    eslint-config-react-app: ^6.0.0
+    eslint-plugin-flowtype: ^5.2.0
+    eslint-plugin-import: ^2.22.1
+    eslint-plugin-jsx-a11y: ^6.4.1
+    eslint-plugin-react: ^7.21.5
+    eslint-plugin-react-hooks: ^4.2.0
+    eslint-webpack-plugin: ^2.4.1
+    lodash: ^4.17.20
+    lru-cache: ^6.0.0
+    material-table: ^1.69.2
+    prettier: ^2.2.1
+    react: ^17.0.1
+    react-app-rewired: ^2.1.8
+    react-dom: ^17.0.1
+    react-redux: ^7.1.3
+    react-refresh: ^0.9.0
+    react-scripts: 4.0.1
+    redux: ^4.0.5
+    typeface-roboto: ^1.1.13
+  languageName: unknown
+  linkType: soft
+
 "material-table@npm:^1.69.2":
   version: 1.69.2
   resolution: "material-table@npm:1.69.2"
@@ -14907,43 +14944,6 @@ resolve@1.18.1:
   checksum: d8f68902575211262605fb50147084b295d410f376314d1b4d55d08e4dbb74339a1817c82a7df051694b3e3663a9d0c0179b728101e8403d906b89735b0e97e0
   languageName: node
   linkType: hard
-
-"ui-prototype@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "ui-prototype@workspace:."
-  dependencies:
-    "@babel/runtime": ^7.12.5
-    "@material-ui/core": ^4.11.2
-    "@material-ui/icons": ^4.11.2
-    "@reduxjs/toolkit": ^1.1.0
-    "@testing-library/jest-dom": ^4.2.4
-    "@testing-library/react": ^9.3.2
-    "@testing-library/user-event": ^7.1.2
-    "@types/jest": ^26.0.19
-    "@types/node": ^14.14.16
-    axios: ^0.21.1
-    eslint: ^7.16.0
-    eslint-config-react-app: ^6.0.0
-    eslint-plugin-flowtype: ^5.2.0
-    eslint-plugin-import: ^2.22.1
-    eslint-plugin-jsx-a11y: ^6.4.1
-    eslint-plugin-react: ^7.21.5
-    eslint-plugin-react-hooks: ^4.2.0
-    eslint-webpack-plugin: ^2.4.1
-    lodash: ^4.17.20
-    lru-cache: ^6.0.0
-    material-table: ^1.69.2
-    prettier: ^2.2.1
-    react: ^17.0.1
-    react-app-rewired: ^2.1.8
-    react-dom: ^17.0.1
-    react-redux: ^7.1.3
-    react-refresh: ^0.9.0
-    react-scripts: 4.0.1
-    redux: ^4.0.5
-    typeface-roboto: ^1.1.13
-  languageName: unknown
-  linkType: soft
 
 "unicode-canonical-property-names-ecmascript@npm:^1.0.4":
   version: 1.0.4

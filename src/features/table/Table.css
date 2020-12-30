@@ -1,0 +1,5 @@
+/* A little bit of a hack to make the action buttons evenly distributed for each row */
+.main-table td > div {
+    display: flex;
+    justify-content: space-evenly;
+}
