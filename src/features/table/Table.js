@@ -5,7 +5,7 @@
 import { makeStyles, Typography } from "@material-ui/core";
 import axios from "axios";
 import MaterialTable from "material-table";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { tableIcons } from "../../app/material-icons";
 import { decrement, increment } from "../debug/debugSlice";
@@ -14,8 +14,9 @@ import "./Table.css";
 import {
   changePage,
   fetchDetailsById,
-  togglePanelState,
-  updateSeen,
+  registerItemHit,
+  setPanelStateClosed,
+  setPanelStateOpen,
 } from "./tableSlice";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,12 +27,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Table() {
+function Table({ preloadDetails }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const tableRef = useRef(null);
-  const itemDetails = useSelector((state) => state.table.itemDetails);
+  const items = useSelector((state) => state.table.items);
   const openPanels = useSelector((state) => state.table.openPanels);
+
+  // When the page is changed, the list of open row panels is reset, which triggers the selector above and causes
+  // the component to re-render; we keep a record of the current page size so that we can re-render with the
+  // appropriate number of rows.
+  const [currentPageSize, setCurrentPageSize] = useState(10);
 
   // Prepare the table parameters
   const columns = [
@@ -77,37 +83,107 @@ function Table() {
     },
   ];
 
+  // Utility functions
+  // -----------------
+  const getData = (query) =>
+    new Promise(async (resolve, reject) => {
+      try {
+        // API call
+        // const response = await axios.post("https://xivapi.com/Achievement", {
+        //   limit: query.pageSize,
+        //   page: query.page + 1,
+        // });
+
+        // And process results
+        // const {
+        //   Results: data,
+        //   Pagination: { Page: page, ResultsTotal: totalCount },
+        // } = response.data;
+
+        let url = "https://reqres.in/api/users?";
+        url += "per_page=" + query.pageSize;
+        url += "&page=" + (query.page + 1);
+
+        const response = await axios.get(url);
+
+        const { data, page, total } = response.data;
+
+        // If enabled, asynchronously pre-fetch the details for all the items on this page.
+        if (preloadDetails) {
+          new Promise(async () => {
+            for (const row of data) {
+              const itemId = row.id;
+              if (!items[itemId]) {
+                dispatch(fetchDetailsById(itemId));
+                // Let's proactively rate-limit ourselves to not crash the API
+                await new Promise((resolve) => setTimeout(resolve, 125));
+              }
+            }
+          });
+        }
+
+        resolve({
+          data,
+          page: page - 1,
+          totalCount: total,
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+
   // Give the details panel the ability to close itself
-  const closeRowPanel = (rowId) => {
-    if (!tableRef.current) {
-      return;
+  const closeRowPanel = (rowData) => {
+    const rowId = rowData.tableData.id;
+    const isOpen = rowData.tableData.showDetailPanel;
+
+    // Sanity check -- Because material-table's imperative function is a toggle, we make sure the panel is actually
+    // open before calling it.
+    if (isOpen) {
+      tableRef.current.onToggleDetailPanel(
+        [rowId],
+        tableRef.current.props.detailPanel
+      );
     }
 
-    tableRef.current.onToggleDetailPanel(
-      [rowId],
-      tableRef.current.props.detailPanel
-    );
-    dispatch(togglePanelState(rowId));
+    // And update our internal panel monitor
+    dispatch(setPanelStateClosed(rowId));
   };
 
-  const handleTogglePanel = (rowData) => {
+  // Material-table's detail panel is toggled imperatively, so we need a little workaround to monitor which panels
+  // are open and control panel state.
+  const handleTogglePanel = (rowData, togglePanel) => {
     const itemId = rowData.id;
     const rowId = rowData.tableData.id;
 
-    const details = itemDetails[itemId];
-    const isOpen = openPanels[rowId];
+    const details = items[itemId];
+    const isOpenState = openPanels.indexOf(rowId) > -1;
+    const isOpen = rowData.tableData.showDetailPanel;
 
-    if (!isOpen) {
-      // The panel is currently closed, so we reload the data even if it was previously dropped.
+    if (!isOpenState) {
+      // Internally, the panel was closed, and it is now being opened by rowClick.
+
+      // Reload the data if necessary, or register a hit if the details are still cached.
       if (!details) {
-        // Initial data load
+        dispatch(registerItemHit(itemId));
         dispatch(fetchDetailsById(itemId));
+      } else if (details.status === "Cached") {
+        dispatch(registerItemHit(itemId));
       }
 
-      if (details?.status === "Cached") {
-        // The details for this item are in the cache; register a hit.
-        dispatch(updateSeen(itemId));
+      // If the panel is not actually open, toggle it imperatively...
+      if (!isOpen) {
+        togglePanel();
       }
+
+      // ... And update our internal panel monitor.
+      dispatch(setPanelStateOpen(rowData.tableData.id));
+    } else {
+      // Internally, the panel was open, and it is now being closed by rowClick.
+      if (isOpen) {
+        togglePanel();
+      }
+      dispatch(setPanelStateClosed(rowData.tableData.id));
     }
   };
 
@@ -123,11 +199,10 @@ function Table() {
           <DetailsPanel rowData={rowData} closeRowPanel={closeRowPanel} />
         )}
         onRowClick={(event, rowData, togglePanel) => {
-          togglePanel();
-          handleTogglePanel(rowData);
-          dispatch(togglePanelState(rowData.tableData.id));
+          handleTogglePanel(rowData, togglePanel);
         }}
-        onChangePage={() => {
+        onChangePage={(_, pageSize) => {
+          setCurrentPageSize(pageSize);
           dispatch(changePage());
         }}
         options={{
@@ -138,7 +213,7 @@ function Table() {
           },
           actionsColumnIndex: -1,
           rowStyle: {},
-          pageSize: 10,
+          pageSize: currentPageSize,
         }}
         actions={[
           (rowData) => ({
@@ -178,46 +253,6 @@ function Table() {
       />
     </div>
   );
-}
-
-/**
- * Fetches a page of remote data
- *
- * @param query
- * @returns {Promise<Object>}
- */
-function getData(query) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // API call
-      // const response = await axios.post("https://xivapi.com/Achievement", {
-      //   limit: query.pageSize,
-      //   page: query.page + 1,
-      // });
-
-      // And process results
-      // const {
-      //   Results: data,
-      //   Pagination: { Page: page, ResultsTotal: totalCount },
-      // } = response.data;
-
-      let url = "https://reqres.in/api/users?";
-      url += "per_page=" + query.pageSize;
-      url += "&page=" + (query.page + 1);
-
-      const response = await axios.get(url);
-
-      const { data, page, total } = response.data;
-
-      resolve({
-        data,
-        page: page - 1,
-        totalCount: total,
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
 }
 
 export default Table;

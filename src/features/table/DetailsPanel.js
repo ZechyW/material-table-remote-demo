@@ -49,12 +49,16 @@ export function DetailsPanel({ rowData, closeRowPanel }) {
   const rowId = rowData.tableData.id;
 
   const classes = useStyles();
-  const details = useSelector((state) => state.table.itemDetails[itemId]);
+  const details = useSelector((state) => state.table.items[itemId]);
+  const isOpenState = useSelector(
+    (state) => state.table.openPanels.indexOf(rowId) > -1
+  );
 
   useEffect(() => {
-    if (!details) {
-      // The panel is open, but it lost its contents (they were probably dropped from the LRU cache) so we close it.
-      closeRowPanel(rowId);
+    if (!details || !isOpenState) {
+      // The panel is due for rendering, but it either has no contents (they were probably dropped from the LRU
+      // cache) or there are too many panels open.
+      closeRowPanel(rowData);
     }
   });
 
