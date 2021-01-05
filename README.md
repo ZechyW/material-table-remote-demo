@@ -1,5 +1,18 @@
 ## Material-Table Remote Data Demo 
 
+This repository provides a fully-functioning example of using `material-table` with remote data, and can be modified or used as a reference for similar projects.
+
+The demo can be served as is from the build folder, with:
+
+```
+npm install -g serve
+serve -s build
+```
+
+or your choice of other webserver.
+
+For further development, clone the source repository, install the dev dependencies, and treat the same as any other CRA app. 
+
 ## CRA Boilerplate
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
