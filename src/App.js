@@ -16,7 +16,7 @@ function App() {
   return (
     <MuiThemeProvider theme={muiTheme}>
       <Container maxWidth="xl" className={classes.root}>
-        <Table preloadDetails />
+        <Table />
         <Debug />
       </Container>
     </MuiThemeProvider>

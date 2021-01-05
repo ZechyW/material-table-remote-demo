@@ -3,18 +3,20 @@
  */
 
 import { makeStyles, Typography } from "@material-ui/core";
-import axios from "axios";
 import MaterialTable from "material-table";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { tableIcons } from "../../app/material-icons";
 import { decrement, increment } from "../debug/debugSlice";
 import { DetailsPanel } from "./DetailsPanel";
 import "./Table.css";
 import {
-  changePage,
   fetchDetailsById,
+  getDataPage,
+  processNewPage,
   registerItemHit,
+  setPageSize,
+  setPanelStateAllClosed,
   setPanelStateClosed,
   setPanelStateOpen,
 } from "./tableSlice";
@@ -27,17 +29,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Table({ preloadDetails }) {
+function Table() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const tableRef = useRef(null);
   const items = useSelector((state) => state.table.items);
   const openPanels = useSelector((state) => state.table.openPanels);
-
-  // When the page is changed, the list of open row panels is reset, which triggers the selector above and causes
-  // the component to re-render; we keep a record of the current page size so that we can re-render with the
-  // appropriate number of rows.
-  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const currentPageSize = useSelector((state) => state.table.pageSize);
 
   // Prepare the table parameters
   const columns = [
@@ -85,53 +83,6 @@ function Table({ preloadDetails }) {
 
   // Utility functions
   // -----------------
-  const getData = (query) =>
-    new Promise(async (resolve, reject) => {
-      try {
-        // API call
-        // const response = await axios.post("https://xivapi.com/Achievement", {
-        //   limit: query.pageSize,
-        //   page: query.page + 1,
-        // });
-
-        // And process results
-        // const {
-        //   Results: data,
-        //   Pagination: { Page: page, ResultsTotal: totalCount },
-        // } = response.data;
-
-        let url = "https://reqres.in/api/users?";
-        url += "per_page=" + query.pageSize;
-        url += "&page=" + (query.page + 1);
-
-        const response = await axios.get(url);
-
-        const { data, page, total } = response.data;
-
-        // If enabled, asynchronously pre-fetch the details for all the items on this page.
-        if (preloadDetails) {
-          new Promise(async () => {
-            for (const row of data) {
-              const itemId = row.id;
-              if (!items[itemId]) {
-                dispatch(fetchDetailsById(itemId));
-                // Let's proactively rate-limit ourselves to not crash the API
-                await new Promise((resolve) => setTimeout(resolve, 125));
-              }
-            }
-          });
-        }
-
-        resolve({
-          data,
-          page: page - 1,
-          totalCount: total,
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
-
   // Give the details panel the ability to close itself
   const closeRowPanel = (rowData) => {
     const rowId = rowData.tableData.id;
@@ -193,7 +144,12 @@ function Table({ preloadDetails }) {
         tableRef={tableRef}
         icons={tableIcons}
         columns={columns}
-        data={getData}
+        data={async (query) => {
+          // Retrieve the remote data, but also let our store know that a new page is incoming.
+          const dataPromise = getDataPage(query);
+          dispatch(processNewPage(dataPromise));
+          return dataPromise;
+        }}
         title="Material-Table Remote Data Demo"
         detailPanel={(rowData) => (
           <DetailsPanel rowData={rowData} closeRowPanel={closeRowPanel} />
@@ -202,8 +158,8 @@ function Table({ preloadDetails }) {
           handleTogglePanel(rowData, togglePanel);
         }}
         onChangePage={(_, pageSize) => {
-          setCurrentPageSize(pageSize);
-          dispatch(changePage());
+          dispatch(setPanelStateAllClosed());
+          dispatch(setPageSize(pageSize));
         }}
         options={{
           actionsCellStyle: {

@@ -1,16 +1,69 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Dispatch a request for a given item from the API server.
+/**
+ * Grabs a specified page of data from the API server.
+ * N.B.: This particular function is *NOT* a thunk, because `material-table` expects a simple function that returns
+ * a promise when dealing with remote data.
+ * We keep it here together with the main reducer logic anyway to keep the API call out of the Table component.
+ * @param query
+ * @returns {Promise<Object>}
+ */
+export const getDataPage = (query) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      // API call
+      let url = "https://reqres.in/api/users";
+      url += "?per_page=" + query.pageSize;
+      url += "&page=" + (query.page + 1);
+
+      const response = await axios.get(url);
+
+      const { data, page, total } = response.data;
+
+      resolve({
+        data,
+        page: page - 1,
+        totalCount: total,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+/**
+ * Processes a new page of remote data, recording the item IDs and preloading item details as appropriate.
+ */
+export const processNewPage = createAsyncThunk(
+  "table/processNewPage",
+  async (dataPromise, { dispatch, getState }) => {
+    const preloadDetails = getState().table.preloadDetails;
+    const items = getState().table.items;
+
+    if (preloadDetails) {
+      const { data } = await dataPromise;
+      new Promise(async () => {
+        for (const row of data) {
+          const itemId = row.id;
+          if (!items[itemId]) {
+            dispatch(fetchDetailsById(itemId));
+            // Let's proactively rate-limit ourselves to not crash the API
+            await new Promise((resolve) => setTimeout(resolve, 125));
+          }
+        }
+      });
+    }
+  }
+);
+
+/**
+ * Dispatch a request for a given item to the API server and store the results in the item cache.
+ */
 export const fetchDetailsById = createAsyncThunk(
   "details/fetchById",
   async (itemId) => {
-    // const response = await axios.post(
-    //   `https://xivapi.com/Achievement/${itemId}`
-    // );
     const response = await axios.get(`https://reqres.in/api/users/${itemId}`);
 
-    // let { Icon, Name, Description } = response.data;
     let { avatar, email, first_name, last_name } = response.data.data;
 
     const icon = avatar;
@@ -43,14 +96,36 @@ const tableSlice = createSlice({
     // Row IDs are used as keys for `openPanels`.
     maxOpenPanels: 1,
     openPanels: [],
+
+    // Although `material-table` does not natively allow managing remote data via controlled state, we keep track of
+    // a couple of important details so that we can keep the Table component as clean as possible.
+    pageSize: 10,
+    preloadDetails: false,
+    currentPageIds: [],
   },
   reducers: {
-    // Panel management
-    // ----------------
-    changePage: (state) => {
-      // When the page changes, any open detail panels are closed.
-      state.openPanels = [];
+    // Items
+    // -----
+    registerItemHit: (state, action) => {
+      // Registers a hit against the LRU cache for the given item, and prunes the cache if necessary.
+      const itemId = action.payload;
+
+      // Hit ...
+      const seenIdx = state.recentItems.indexOf(itemId);
+      if (seenIdx > -1) {
+        state.recentItems.splice(seenIdx, 1);
+      }
+      state.recentItems.push(itemId);
+
+      // ... and prune
+      while (state.recentItems.length > state.maxSaved) {
+        const removeId = state.recentItems.shift();
+        delete state.items[removeId];
+      }
     },
+
+    // Detail panels
+    // -------------
     setPanelStateOpen: (state, action) => {
       // Material-table's detail panel toggling is imperative --
       // We keep our own records of which panels are open so that we can initialise/close them programmatically.
@@ -75,25 +150,18 @@ const tableSlice = createSlice({
         state.openPanels.splice(openPanelsIdx, 1);
       }
     },
+    setPanelStateAllClosed: (state) => {
+      state.openPanels = [];
+    },
 
-    // Item management
-    // ---------------
-    registerItemHit: (state, action) => {
-      // Registers a hit against the LRU cache for the given item, and prunes the cache if necessary.
-      const itemId = action.payload;
-
-      // Hit ...
-      const seenIdx = state.recentItems.indexOf(itemId);
-      if (seenIdx > -1) {
-        state.recentItems.splice(seenIdx, 1);
-      }
-      state.recentItems.push(itemId);
-
-      // ... and prune
-      while (state.recentItems.length > state.maxSaved) {
-        const removeId = state.recentItems.shift();
-        delete state.items[removeId];
-      }
+    // Pagination and data
+    // -------------------
+    setPageSize: (state, action) => {
+      // `material-table` also tells us what the current page size is
+      state.pageSize = action.payload;
+    },
+    togglePreload: (state) => {
+      state.preloadDetails = !state.preloadDetails;
     },
   },
   extraReducers: {
@@ -114,10 +182,12 @@ const tableSlice = createSlice({
 });
 
 export const {
-  changePage,
+  registerItemHit,
   setPanelStateOpen,
   setPanelStateClosed,
-  registerItemHit,
+  setPanelStateAllClosed,
+  setPageSize,
+  togglePreload,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

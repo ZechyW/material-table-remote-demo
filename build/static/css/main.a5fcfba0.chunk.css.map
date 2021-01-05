@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/features/table/Table.css"],"names":[],"mappings":"AACA,mBACI,YAAa,CACb,4BACJ","file":"main.a5fcfba0.chunk.css","sourcesContent":["/* A little bit of a hack to make the action buttons evenly distributed for each row */\r\n.main-table td > div {\r\n    display: flex;\r\n    justify-content: space-evenly;\r\n}"]}

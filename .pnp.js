@@ -44,12 +44,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@testing-library/jest-dom", "npm:4.2.4"],
             ["@testing-library/react", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:9.5.0"],
             ["@testing-library/user-event", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:7.2.1"],
-            ["@types/jest", "npm:26.0.19"],
-            ["@types/node", "npm:14.14.16"],
             ["axios", "npm:0.21.1"],
             ["eslint-config-react-app", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:6.0.0"],
             ["material-table", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:1.69.2"],
-            ["prettier", "npm:2.2.1"],
             ["react", "npm:17.0.1"],
             ["react-dom", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:17.0.1"],
             ["react-redux", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:7.2.2"],
@@ -5162,17 +5159,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@types/istanbul-reports", "npm:3.0.0"],
             ["@types/istanbul-lib-report", "npm:3.0.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["@types/jest", [
-        ["npm:26.0.19", {
-          "packageLocation": "./.yarn/cache/@types-jest-npm-26.0.19-add5d117dd-98c8daaf89.zip/node_modules/@types/jest/",
-          "packageDependencies": [
-            ["@types/jest", "npm:26.0.19"],
-            ["jest-diff", "npm:26.6.2"],
-            ["pretty-format", "npm:26.6.2"]
           ],
           "linkType": "HARD",
         }]
@@ -13873,12 +13859,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@testing-library/jest-dom", "npm:4.2.4"],
             ["@testing-library/react", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:9.5.0"],
             ["@testing-library/user-event", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:7.2.1"],
-            ["@types/jest", "npm:26.0.19"],
-            ["@types/node", "npm:14.14.16"],
             ["axios", "npm:0.21.1"],
             ["eslint-config-react-app", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:6.0.0"],
             ["material-table", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:1.69.2"],
-            ["prettier", "npm:2.2.1"],
             ["react", "npm:17.0.1"],
             ["react-dom", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:17.0.1"],
             ["react-redux", "virtual:6e1cfc202bf3aad04392f08597ebf6a7e82d7f9bbb6e3650e9fdab923fb5b4628be82cabccdd136d1a18a28e5c91c60710637bed2c6c55fa59baed747a7c41c5#npm:7.2.2"],
@@ -16373,15 +16356,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/prepend-http-npm-1.0.4-cd78a41247-f723f34a23.zip/node_modules/prepend-http/",
           "packageDependencies": [
             ["prepend-http", "npm:1.0.4"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["prettier", [
-        ["npm:2.2.1", {
-          "packageLocation": "./.yarn/cache/prettier-npm-2.2.1-e0670992f8-92c6c9f4b8.zip/node_modules/prettier/",
-          "packageDependencies": [
-            ["prettier", "npm:2.2.1"]
           ],
           "linkType": "HARD",
         }]

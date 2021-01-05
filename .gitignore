@@ -232,6 +232,3 @@ sketch
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/yarn,intellij+all,react,node
-
-# Production
-/build
